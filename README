@@ -1,2 +1,7 @@
+ft_server (cd ft_server)
+	# docker build -t (what you want) .
+	# docker run -e "index=on" -ti -p 80:80 -p 443:443 (what you put)
+	# https://localhost/
+
 username sql wordpress
 mdp password

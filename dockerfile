@@ -1,8 +1,10 @@
-FROM debian:10 
+FROM debian:buster 
 
 MAINTAINER antton-t <antton-t@student.42.fr>
 
 USER root
+
+ENV index=$index 
 
 ADD /srcs/* /tmp/
 
@@ -34,11 +36,14 @@ RUN  unzip latest.zip -d  /var/www/ \
 	&& chown -R www-data:www-data /var/www/* \
 	&& chmod -R 755 /var/www/* 
 
+
 RUN  yes "" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt \
 	&& mv /tmp/conf_nginx /etc/nginx/sites-available/localhost \
 	&& ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost \
 	&& rm -rf /etc/nginx/sites-enabled/default 
 
+RUN sed -i "s/autoindex off/autoindex ${index}/" /etc/nginx/sites-available/localhost
+RUN echo $index>> /etc/nginx/sites-available/localhost
 RUN service mysql start \
         && mysql -u root  --password= -e "CREATE DATABASE wordpress;" \
         && mysql -u root --password= -e "CREATE USER 'wordpress'@'localhost' IDENTIFIED BY 'password';" \

@@ -4,8 +4,6 @@ MAINTAINER antton-t <antton-t@student.42.fr>
 
 USER root
 
-ENV index=$index 
-
 ADD /srcs/* /tmp/
 
 RUN apt-get -y update \
@@ -42,8 +40,6 @@ RUN  yes "" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/s
 	&& ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost \
 	&& rm -rf /etc/nginx/sites-enabled/default 
 
-RUN sed -i "s/autoindex off/autoindex ${index}/" /etc/nginx/sites-available/localhost
-RUN echo $index>> /etc/nginx/sites-available/localhost
 RUN service mysql start \
         && mysql -u root  --password= -e "CREATE DATABASE wordpress;" \
         && mysql -u root --password= -e "CREATE USER 'wordpress'@'localhost' IDENTIFIED BY 'password';" \
